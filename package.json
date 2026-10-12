@@ -36,7 +36,8 @@
     "url": "https://github.com/aqiu817/dsh-plugin-continue-on-limit/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "test": "node --test --test-isolation=none \"test/**/*.test.mjs\"",
