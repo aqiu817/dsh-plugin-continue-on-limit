@@ -1,0 +1,23 @@
+# Auto-continue a turn the model ended by exhausting its output budget.
+#
+# When a reply is cut off mid-sentence the harness parks the session and waits
+# for a human to type "继续". This entry replaces that keystroke with a host
+# follow-up, gated by a per-session burst cap and a minimum interval.
+#
+# Every field is `.volatile()` in the plugin's Config schema, so the Plugins
+# page edits them without reloading this fiber — which is what makes
+# `enabled: false` stop an in-progress chain immediately.
+#
+# `maxConsecutive` is the field to watch. `3` is a deliberate default: enough
+# to finish a long answer, few enough that a model which keeps overflowing
+# stops after one more chain instead of billing until the context fills.
+# `0` removes the cap entirely and should stay at that.
+
+- insert:
+    - id: continue-on-limit
+      name: 'dsh-plugin-continue-on-limit'
+      config:
+        enabled: true
+        continueText: '继续'
+        maxConsecutive: 3
+        minIntervalMs: 1500

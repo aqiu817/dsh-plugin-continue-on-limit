@@ -1,0 +1,53 @@
+{
+  "name": "dsh-plugin-continue-on-limit",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness plugin that auto-continues a turn the model ended by exhausting its output-token limit, with a per-session burst cap and a minimum interval between continuations.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "cordis",
+    "auto-continue",
+    "max-tokens",
+    "truncation",
+    "agent"
+  ],
+  "license": "MIT",
+  "author": "Rina",
+  "type": "module",
+  "main": "lib/index.js",
+  "files": [
+    "lib/",
+    "cordis.patch.yml",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aqiu817/dsh-plugin-continue-on-limit.git"
+  },
+  "homepage": "https://github.com/aqiu817/dsh-plugin-continue-on-limit#readme",
+  "bugs": {
+    "url": "https://github.com/aqiu817/dsh-plugin-continue-on-limit/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test --test-isolation=none \"test/**/*.test.mjs\"",
+    "prepublishOnly": "npm test"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.4"
+  }
+}
