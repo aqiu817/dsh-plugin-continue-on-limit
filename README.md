@@ -15,6 +15,7 @@ DeepSeek Harness 宿主侧插件：监听 `turn/end` 的 `max-tokens` 结束原�
 > minimum interval, and an opt-out. No client half, no UI snapshot dependency,
 > 61 tests on bare `node`.
 
+[![npm](https://img.shields.io/npm/v/dsh-plugin-continue-on-limit)](https://www.npmjs.com/package/dsh-plugin-continue-on-limit)
 ![license](https://img.shields.io/badge/license-MIT-blue)
 ![tests](https://img.shields.io/badge/tests-61%20passing-brightgreen)
 ![node](https://img.shields.io/badge/node-%3E%3D22-informational)
@@ -53,22 +54,15 @@ UI 显示「回答被截断…发送"继续"可让模型接着输出」。这是
 
 本插件是一个标准的 dsh bundle，通过 profile 的 `package.json` 挂载。
 
-**1. 装依赖**
+### 从 npm 安装
 
-```bash
-cd dsh-plugin-continue-on-limit
-npm install --ignore-scripts
-```
-
-用 npm 而非 pnpm：pnpm 在部分沙箱环境下建不出 junction，会把顶层 `node_modules`
-落成实体目录，导致 `@deepseek-ai/cosmokit` 不可达。
-
-**2. 在 profile 的 `package.json` 里登记**
+在 profile 的 `package.json`（`~/.dsh/profiles/<name>/package.json`）里加依赖，并加进
+`bundles`：
 
 ```jsonc
 {
   "dependencies": {
-    "dsh-plugin-continue-on-limit": "link:/absolute/path/to/dsh-plugin-continue-on-limit"
+    "dsh-plugin-continue-on-limit": "^0.1.0"
   },
   "dsh": {
     "profile": {
@@ -82,12 +76,43 @@ npm install --ignore-scripts
 }
 ```
 
+然后在 profile 目录里装依赖，重启 dsh：
+
+```bash
+pnpm install
+```
+
 `cordis.patch.yml` 会通过 `dsh.bundle.patch` 自动挂进 patch 列表，不需要手写那条
 `- insert:`。
 
-**3. `pnpm install`，重启 dsh。**
+### 从源码安装
 
-卸载就是把上面两步反向做掉，没有残留状态。
+只有要改插件本身时才需要。先 clone 并装好它自己的依赖：
+
+```bash
+git clone https://github.com/aqiu817/dsh-plugin-continue-on-limit.git
+cd dsh-plugin-continue-on-limit
+npm install --ignore-scripts
+```
+
+用 npm 而非 pnpm：pnpm 在部分沙箱环境下建不出 junction，会把顶层 `node_modules`
+落成实体目录，导致 `@deepseek-ai/cosmokit` 不可达。
+
+再把 profile 的依赖指向本地路径：
+
+```jsonc
+{
+  "dependencies": {
+    "dsh-plugin-continue-on-limit": "link:/absolute/path/to/dsh-plugin-continue-on-limit"
+  }
+}
+```
+
+`pnpm install`，重启 dsh。
+
+### 卸载
+
+删掉依赖和 `bundles` 里那一行，再 `pnpm install`。没有残留状态。
 
 > 本插件**不是** `required` bundle：组合失败不会写启动日志。装完请确认 Plugins
 > 页面能看到 `continue-on-limit` 这一项。

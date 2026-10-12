@@ -9,6 +9,7 @@ finish reason and issues an ordinary next-turn follow-up through
 `agent.followup()`, gated by a per-session burst cap, a minimum interval, and an
 opt-out. No client half, no React slot, no dependency on any UI snapshot field.
 
+[![npm](https://img.shields.io/npm/v/dsh-plugin-continue-on-limit)](https://www.npmjs.com/package/dsh-plugin-continue-on-limit)
 ![license](https://img.shields.io/badge/license-MIT-blue)
 ![tests](https://img.shields.io/badge/tests-61%20passing-brightgreen)
 ![node](https://img.shields.io/badge/node-%3E%3D22-informational)
@@ -51,23 +52,15 @@ stays fully auditable.
 The plugin is a standard dsh bundle, mounted through the profile's
 `package.json`.
 
-**1. Install dependencies**
+### From npm
 
-```bash
-cd dsh-plugin-continue-on-limit
-npm install --ignore-scripts
-```
-
-Use npm rather than pnpm: in some sandboxed environments pnpm cannot create
-junctions and materialises the top-level `node_modules` as a real directory,
-which leaves `@deepseek-ai/cosmokit` unreachable.
-
-**2. Register it in the profile's `package.json`**
+Add the dependency to the profile's `package.json`
+(`~/.dsh/profiles/<name>/package.json`) and list it in `bundles`:
 
 ```jsonc
 {
   "dependencies": {
-    "dsh-plugin-continue-on-limit": "link:/absolute/path/to/dsh-plugin-continue-on-limit"
+    "dsh-plugin-continue-on-limit": "^0.1.0"
   },
   "dsh": {
     "profile": {
@@ -81,12 +74,46 @@ which leaves `@deepseek-ai/cosmokit` unreachable.
 }
 ```
 
+Then install inside the profile directory and restart dsh:
+
+```bash
+pnpm install
+```
+
 `cordis.patch.yml` is picked up automatically through `dsh.bundle.patch`; you do
 not need to hand-write the `- insert:` row.
 
-**3. Run `pnpm install` and restart dsh.**
+### From source
 
-Uninstalling is those two steps in reverse. No state is left behind.
+Only needed if you intend to modify the plugin. Clone it and install its own
+dependencies first:
+
+```bash
+git clone https://github.com/aqiu817/dsh-plugin-continue-on-limit.git
+cd dsh-plugin-continue-on-limit
+npm install --ignore-scripts
+```
+
+Use npm rather than pnpm: in some sandboxed environments pnpm cannot create
+junctions and materialises the top-level `node_modules` as a real directory,
+which leaves `@deepseek-ai/cosmokit` unreachable.
+
+Then point the profile's dependency at the local path:
+
+```jsonc
+{
+  "dependencies": {
+    "dsh-plugin-continue-on-limit": "link:/absolute/path/to/dsh-plugin-continue-on-limit"
+  }
+}
+```
+
+Run `pnpm install` and restart dsh.
+
+### Uninstall
+
+Remove the dependency and the `bundles` entry, then run `pnpm install` again. No
+state is left behind.
 
 > This plugin is **not** a `required` bundle, so a failed composition writes no
 > startup log. After installing, confirm that `continue-on-limit` appears on the
